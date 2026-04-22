@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Builder AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --ink: #0f1729;
+            --ink-muted: #4a5568;
+            --gold: #c9a84c;
+            --gold-light: #f5e9c8;
+            --white: #fafaf8;
+            --border: #e2ddd6;
+            --shadow: 0 4px 32px rgba(15,23,41,0.10);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--white);
+            color: var(--ink);
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 2rem 1rem;
+        }
+
+        /* Background texture */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 50% at 20% 10%, rgba(201,168,76,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 60% at 80% 90%, rgba(15,23,41,0.05) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .card {
+            position: relative;
+            z-index: 1;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 540px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: var(--ink);
+            padding: 2.5rem 2.5rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold) 0%, #e8c96a 50%, var(--gold) 100%);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            border: 1.5px solid var(--gold);
+            display: grid;
+            place-items: center;
+            font-size: 16px;
+        }
+
+        .brand-name {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.1rem;
+            color: var(--gold);
+            letter-spacing: 0.05em;
+        }
+
+        .card-header h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.1rem;
+            color: #fff;
+            line-height: 1.1;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-header p {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.875rem;
+            font-weight: 300;
+        }
+
+        .card-body {
+            padding: 2.5rem;
+        }
+
+        .field {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ink-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        input, textarea {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 1px;
+            padding: 0.75rem 1rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            color: var(--ink);
+            background: var(--white);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: #b0a99a;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 110px;
+        }
+
+        .hint {
+            font-size: 0.78rem;
+            color: #9a9287;
+            margin-top: 0.35rem;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background: var(--ink);
+            color: #fff;
+            border: none;
+            border-radius: 1px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: background 0.2s;
+        }
+
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--gold), #e8c96a, var(--gold));
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .btn-submit:hover { background: #1a2640; }
+        .btn-submit:hover::before { transform: scaleX(1); }
+
+        .btn-submit .btn-text { transition: opacity 0.2s; }
+        .btn-submit.loading .btn-text { opacity: 0; }
+        .btn-submit.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 18px; height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 1.75rem 0;
+        }
+
+        .telegram-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            background: var(--gold-light);
+            border-left: 3px solid var(--gold);
+            padding: 0.875rem 1rem;
+            border-radius: 1px;
+            font-size: 0.82rem;
+            color: #6b5b2e;
+            line-height: 1.5;
+        }
+
+        .telegram-note strong { color: var(--ink); }
+
+        @media (max-width: 600px) {
+            .card-header, .card-body { padding: 2rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="card-header">
+            <div class="brand">
+                <div class="brand-icon">✦</div>
+                <span class="brand-name">CV Builder AI</span>
+            </div>
+            <h1>Professional<br>Rezyume</h1>
+            <p>AI yordamida ingliz tilidagi CV yarating</p>
+        </div>
+
+        <div class="card-body">
+            <form action="/generate" method="post" id="cvForm">
+                <div class="field">
+                    <label for="full_name">To'liq ismingiz</label>
+                    <input type="text" id="full_name" name="full_name"
+                           placeholder="Alisher Navoiy" required>
+                </div>
+
+                <div class="field">
+                    <label for="email">Email manzil</label>
+                    <input type="email" id="email" name="email"
+                           placeholder="alisher@example.com" required>
+                </div>
+
+                <div class="field">
+                    <label for="contacts">Aloqa ma'lumotlari</label>
+                    <input type="text" id="contacts" name="contacts"
+                           placeholder="Telefon, LinkedIn, GitHub">
+                    <p class="hint">Ixtiyoriy — telefon, LinkedIn, GitHub va h.k.</p>
+                </div>
+
+                <div class="field">
+                    <label for="skills">Ko'nikmalar</label>
+                    <input type="text" id="skills" name="skills"
+                           placeholder="Python, FastAPI, Docker, PostgreSQL">
+                    <p class="hint">Vergul bilan ajrating</p>
+                </div>
+
+                <div class="field">
+                    <label for="experience">Ish tajribasi</label>
+                    <textarea id="experience" name="experience"
+                              placeholder="Qayerda ishlagansiz va nimalar qilgansiz? O'zbek yoki ingliz tilida yozing — AI professional matnga o'giradi."></textarea>
+                    <p class="hint">AI matnni professional CV formatiga o'giradi</p>
+                </div>
+
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <span class="btn-text">CV Yaratish &rarr;</span>
+                </button>
+            </form>
+
+            <hr class="divider">
+
+            <div class="telegram-note">
+                <span>📱</span>
+                <div>
+                    <strong>Telegram Bot ham mavjud!</strong><br>
+                    Chat ko'rinishida CV yaratish uchun botdan foydalaning.
+                    Har bir qadam interaktiv tarzda so'raladi.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('cvForm').addEventListener('submit', function() {
+            const btn = document.getElementById('submitBtn');
+            btn.classList.add('loading');
+            btn.disabled = true;
+        });
+    </script>
+</body>
+</html>

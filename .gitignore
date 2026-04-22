@@ -1,0 +1,37 @@
+# Python kesh fayllari
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+*.pyc
+*.pyo
+
+# Virtual muhit (Virtual Environments) - ENG MUHIMI
+.venv/
+.env
+venv/
+ENV/
+env/
+
+# Maxfiy ma'lumotlar (Environment Variables)
+.env
+*.env
+
+# Ma'lumotlar bazasi
+*.db
+*.sqlite3
+*.sqlite
+
+# IDE sozlamalari
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Log fayllar
+*.log
+logs/
+
+# Docker kesh va vaqtinchalik fayllar
+.docker/
